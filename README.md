@@ -1,213 +1,124 @@
-# React Image Editor
+# LEONIDA LIFE
 
-[![npm version](https://img.shields.io/npm/v/@unlayer/react-image-editor.svg)](https://www.npmjs.com/package/@unlayer/react-image-editor)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![CI](https://github.com/unlayer/react-image-editor/actions/workflows/ci.yml/badge.svg)](https://github.com/unlayer/react-image-editor/actions/workflows/ci.yml)
+## Create the Chaos. Watch Leonida React.
 
-The excellent [Unlayer Image Editor](https://unlayer.com/image-editor) as a React.js wrapper component — crop, resize, draw, text, shapes, stickers, frames, filters, and an optional AI Assistant.
+Leonida Life is an original fictional interactive experience built for the **Build with React Image Editor Challenge**. Choose an incident, upload local evidence, transform it with Unlayer's React Image Editor, publish it, and watch that exact edited image ripple through a fictional social feed, breaking-news broadcast, public-safety system, and final Chaos Report.
 
-<img width="1536" height="1024" alt="react-image-editor-text" src="https://github.com/user-attachments/assets/99bea489-4b82-4e35-bb37-34d1e11e05d5" />
+It is a fictional world with original copy, UI, and art direction. It does not use Rockstar, GTA, or real-world media/police branding or artwork.
 
-## Live Demo
+## The experience
 
-Try the live demo: [react-image-editor-example.vercel.app](https://react-image-editor-example.vercel.app/)
+1. Choose the chaos — select one of six fictional Leonida incidents.
+2. Upload evidence — select a local JPG, PNG, or WEBP image (up to 20 MB).
+3. Edit evidence — crop, resize, filter, draw, add text, shapes, stickers, and frames with React Image Editor.
+4. Publish to Leonida — launch the staged public reaction.
+5. Watch Leonida react — see the same image become a Leonida Live post, LCN broadcast, and Leonida Public Safety record.
+6. Generate a Chaos Report — review the fictional final impact, then download or share the edited evidence.
 
-## Installation
+## Why React Image Editor matters
 
-```sh
-npm install @unlayer/react-image-editor
+React Image Editor is the central creation mechanic, not a decorative integration. A local image is converted to a data URL and passed to `ImageEditor`; its real `onSave({ dataUrl, blob })` result becomes the single artifact that drives the whole narrative.
+
+```text
+local file
+  → FileReader data URL
+  → React Image Editor
+  → onSave({ dataUrl, blob })
+  → application state
+  → social post / breaking news / public-safety evidence / Chaos Report
+  → download or native share
 ```
 
-## Usage
+The experience exposes the editor's supported crop, resize, filter, draw, text, shapes, stickers, and frame tools. The saved flattened image is intentionally reused everywhere after the editor; it is never replaced with a mock visual.
 
-Requires React >= 18.
+## Built with
 
-```jsx
-import React, { useRef } from 'react';
+- React
+- TypeScript
+- Vite
+- `@unlayer/react-image-editor`
+- CSS custom properties and CSS animation
+- Native browser APIs: FileReader, Blob, download anchors, Web Share, Clipboard
+
+## Run locally
+
+Requires Node.js 20 or later. Node 22 is the repository's primary CI version.
+
+```sh
+npm ci
+npm --prefix demo ci
+npm --prefix demo run dev
+```
+
+The Vite app normally runs at `http://localhost:5173`.
+
+## Validate
+
+```sh
+npm --prefix demo run typecheck
+npm --prefix demo run build
+npm run lint
+npm test
+```
+
+## Project structure
+
+```text
+src/                         # Preserved React Image Editor library wrapper
+demo/
+  src/
+    components/              # Leonida Life experience screens
+    data/                    # Scenario and reaction/report data
+    types/                   # Experience types
+    App.tsx                  # Bounded phase/reaction reducer
+```
+
+The hackathon application lives in `demo/`. Its Vite configuration intentionally aliases `@unlayer/react-image-editor` to the repository's root `src/index.ts`, so the experience uses this fork's local library implementation while retaining one React copy.
+
+## Deploy to Vercel
+
+This repository includes a root-level [`vercel.json`](vercel.json) because the demo's Vite alias needs access to the parent `src/` directory. Deploy from the **repository root**, not from `demo/` as Vercel's Root Directory.
+
+The supplied configuration uses:
+
+```text
+Root Directory: repository root
+Install Command: npm ci
+Build Command: npm --prefix demo ci && npm --prefix demo run build
+Output Directory: demo/dist
+Framework: Vite
+```
+
+No SPA rewrite is required: the experience does not use client-side routes. Do not deploy from this repository without your own authorized Vercel project/account access.
+
+## Screenshots
+
+Screenshots are intentionally not referenced until final captured assets are added. Recommended submission captures:
+
+- Landing screen
+- Evidence Lab / React Image Editor
+- Leonida Live reaction
+- LCN Breaking News
+- Final Chaos Report
+
+## Upstream React Image Editor
+
+Leonida Life is built in a fork of [Unlayer's React Image Editor](https://github.com/unlayer/react-image-editor), an MIT-licensed React wrapper for the Unlayer Image Editor. The published library source and its tests remain preserved under `src/` and `test/`.
+
+The package supports React 18 or later and ships an editor with crop, resize, draw, text, shapes, stickers, frames, filters, localization, themes, and optional account-configured AI Assistant support. See the source types in [`src/types.ts`](src/types.ts) for the wrapper API.
+
+```tsx
 import ImageEditor from '@unlayer/react-image-editor';
 
-const App = () => {
-  const editorRef = useRef(null);
-
-  return (
-    <ImageEditor
-      ref={editorRef}
-      image="https://example.com/photo.jpg"
-      options={{ theme: 'light' }}
-      onSave={({ dataUrl, blob }) => {
-        // Persist the edited image
-        console.info('Saved', dataUrl.length, 'bytes');
-      }}
-      onCancel={() => console.info('Editing cancelled')}
-    />
-  );
-};
-```
-
-The component works out of the box in React Server Components environments (e.g. Next.js App Router) — it ships with the `'use client'` directive and touches the DOM only inside effects.
-
-## Props
-
-| Prop           | Type                          | Description                                                                                                                                                                            |
-| -------------- | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `image`        | `string` (required)           | Image URL or base64 data URL to edit.                                                                                                                                                  |
-| `options`      | `ImageEditorOptions`          | Editor configuration: `projectId`, `user`, `features`, `theme`, `locale`, `translations`, `env`, `offline`, `licenseUrl`, `defaultPrompt`, `autoSubmitPrompt`, `aiAssistantOpenState`. |
-| `editorId`     | `string`                      | id for the container div. Cosmetic — the editor mounts by element reference.                                                                                                           |
-| `minHeight`    | `number \| string`            | Minimum height of the editor container. Defaults to `500`.                                                                                                                             |
-| `style`        | `CSSProperties`               | Styles applied to the container div. Overrides the default `flex: 1`.                                                                                                                  |
-| `wrapperStyle` | `CSSProperties`               | Styles applied to the outer wrapper div, which owns `minHeight` and the flex layout. Set this to drop the editor into a non-flex layout.                                               |
-| `ariaLabel`    | `string`                      | Accessible name for the editor region. Defaults to `'Image editor'`.                                                                                                                   |
-| `onLoad`       | `(editor) => void`            | Called with the editor instance once it is mounted.                                                                                                                                    |
-| `onSave`       | `({ dataUrl, blob }) => void` | Called when the user saves the edited image.                                                                                                                                           |
-| `onCancel`     | `() => void`                  | Called when the user cancels editing.                                                                                                                                                  |
-| `onLoadError`  | `() => void`                  | Called when the image fails to load into the canvas (CORS, 404, decode error).                                                                                                         |
-| `onError`      | `(error: Error) => void`      | Wrapper-level failures: embed script load, editor creation, or image reset. Falls back to `console.error` when absent.                                                                 |
-
-## Editor instance (ref)
-
-The `ref` exposes `{ editor }` — `null` until the editor mounts, then an instance with:
-
-| Method                   | Description                                                                  |
-| ------------------------ | ---------------------------------------------------------------------------- |
-| `getImage()`             | Current canvas as a data URL (flattened), or `null`.                         |
-| `hasChanges()`           | Whether there are unsaved edits.                                             |
-| `reset(imageUrl?)`       | Reset editor state (clears undo/redo and chat), optionally load a new image. |
-| `updateOptions(partial)` | Update options like `theme` / `locale` at runtime.                           |
-| `destroy()`              | Unmount the editor (the component does this automatically on unmount).       |
-
-```jsx
-const dataUrl = editorRef.current?.editor?.getImage();
-```
-
-## How prop changes are applied
-
-| Change                                                       | Behavior                                                                                                                                 |
-| ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `image`                                                      | Applied via `reset(newImage)` — **clears undo/redo history and AI chat**. Rapid changes are serialized and collapse to the latest value. |
-| `options.theme`, `options.locale`, `options.translations`    | Applied via `updateOptions()` — no remount, editor state preserved.                                                                      |
-| Any other `options` key                                      | Full remount — the editor is destroyed and recreated with the new configuration.                                                         |
-| `onSave` / `onCancel` / `onLoadError` / `onLoad` / `onError` | Always call the latest handler; changing them never remounts.                                                                            |
-
-## Error handling
-
-Two distinct channels:
-
-- **`onLoadError`** — the editor loaded fine, but the _image_ couldn't be loaded into the canvas (CORS, dead URL, decode error).
-- **`onError`** — the wrapper couldn't reach a working editor: the embed script failed to load, editor creation was rejected, or re-applying a changed `image` failed. After a CDN failure the wrapper automatically resets its loader state, so a later remount retries from scratch.
-
-## Tools
-
-The editor ships eight tools, rendered as a tab rail beside the canvas:
-
-| Tool       | What it does                                                                                   |
-| ---------- | ---------------------------------------------------------------------------------------------- |
-| `crop`     | Crop with rotate (90° steps), flip, and a straighten slider.                                   |
-| `resize`   | Change the output dimensions.                                                                  |
-| `filter`   | One-tap presets plus adjustment sliders (brightness, contrast, saturation, hue, blur, noise…). |
-| `draw`     | Freehand brush with color, type, and size controls.                                            |
-| `text`     | Text layers with style presets, fonts, color/background/outline/shadow.                        |
-| `shapes`   | Filled/outline/gradient shape palettes with drag, resize, rotate, and styling.                 |
-| `stickers` | A bundled sticker library grouped by category, with color/outline/shadow for vector sets.      |
-| `frame`    | Frame presets with a size slider and color picker.                                             |
-
-All tools are enabled by default. Configure them through `options.features.imageEditor.tools` — each entry is either a `boolean` shorthand or `{ enabled?: boolean; icon?: string }`:
-
-```jsx
-// Hide the tools you don't want
 <ImageEditor
-  image={url}
-  options={{
-    features: {
-      imageEditor: {
-        dock: 'left',
-        tools: {
-          corners: false,
-          draw: false,
-          stickers: false,
-          frame: { enabled: false }, // object form, same effect
-        },
-      },
-    },
+  image={imageDataUrl}
+  options={{ theme: 'dark' }}
+  onSave={({ dataUrl, blob }) => {
+    // Persist or reuse the saved edited output.
   }}
-/>
-```
-
-```jsx
-// Allow-list style: a minimal crop-and-filter editor
-<ImageEditor
-  image={url}
-  options={{
-    features: {
-      imageEditor: {
-        tools: {
-          resize: false,
-          draw: false,
-          text: false,
-          shapes: false,
-          stickers: false,
-          frame: false,
-          // crop and filter stay enabled by default
-        },
-      },
-    },
-  }}
-/>
-```
-
-```jsx
-// Custom tool icon: a URL, raw <svg>…</svg> markup, or a Font Awesome name
-<ImageEditor
-  image={url}
-  options={{
-    features: {
-      imageEditor: {
-        tools: {
-          crop: { icon: 'fa-crop-simple' },
-          text: { icon: 'https://example.com/icons/text.svg' },
-        },
-      },
-    },
-  }}
-/>
-```
-
-Two things to keep in mind:
-
-- `features` is a remount-tier option (see the table above): changing the tools config destroys and recreates the editor, discarding unsaved edits — decide the toolset before mounting rather than toggling it live.
-- `features.imageEditor: false` disables the editing UI entirely. Use `features.imageEditor.dock: 'left' | 'right'` to position the tool rail; the rounded-corners control inside Crop is configured through `features.imageEditor.tools.corners`.
-
-## AI Assistant
-
-The editor includes an optional AI Assistant for chat-based edits. It requires a `projectId` from your [Unlayer account](https://console.unlayer.com/) with the feature enabled.
-
-<img width="1690" height="931" alt="react-image-editor-ai" src="https://github.com/user-attachments/assets/990effdb-5c8b-4b5d-abf4-804bfefaf273" />
-
-### Enable AI Assistant
-
-```jsx
-<ImageEditor
-  image={url}
-  options={{
-    projectId: 1234, // get from console
-    features: { ai: { enabled: true, assistant: true } },
-  }}
-/>
-```
-
-## Localization
-
-Set `options.locale` (bundled: `en`, `es`, `fr`, `de`, `it`, `pt`, `nl`, `ja`, `ko`, `zh`) and optionally override strings with `options.translations`.
-
-## Demo
-
-Try the live demo at [react-image-editor-example.vercel.app](https://react-image-editor-example.vercel.app/), or run it locally — a Vite-based demo lives in [`demo/`](demo):
-
-```sh
-cd demo
-npm install
-npm run dev
+/>;
 ```
 
 ## License
 
-Copyright (c) 2026 Unlayer. [MIT](LICENSE) Licensed.
+The underlying React Image Editor library is Copyright (c) 2026 Unlayer and licensed under the [MIT License](LICENSE). Leonida Life is an original fictional hackathon experience built with that library.
