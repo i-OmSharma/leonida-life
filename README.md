@@ -1,5 +1,7 @@
 # LEONIDA LIFE
 
+🎮 **Live Demo:** https://leonida-life.vercel.app
+
 ## Create the Chaos. Watch Leonida React.
 
 Leonida Life is an original fictional interactive experience built for the **Build with React Image Editor Challenge**. Choose an incident, upload local evidence, transform it with Unlayer's React Image Editor, publish it, and watch that exact edited image ripple through a fictional social feed, breaking-news broadcast, public-safety system, and final Chaos Report.
